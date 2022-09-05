@@ -1,0 +1,198 @@
+---
+title: "Obesity and GDP"
+author: "Jasper Fan-Chiang, Bonnie Du, Siming Yin"
+group: "G1"
+date: "2/24/2021"
+output: html_document
+---
+  
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library("knitr")
+source("analysis.R")
+```
+
+## Section 1. Problem Domain Description
+
+Nowadays, **obesity** is viewed by authorities as one of the most serious public health problems of the 21st century. Obesity is a disorder involving excessive body fat that increases the risk of health problems. In general, obesity means overweight. Obesity is correlated with various diseases and conditions, for example, heart disease, diabetes, certain kinds of cancers, and even mental health issues. According to the data in 2015, there are 600 million adults and 100 million children were obese in 195 countries. **Obesity is a leading preventable cause of death worldwide**.
+<br>
+  
+GDP is used to measure the prosperity of a country during a certain period. By examining the GDP value for each country, we can determinate the development and progress of a country. This is one of the important measurement or powerful statistical indicator for comparing the national economies development in the international market.
+<br>
+  
+Our group find out that there might be some interesting relationships between obesity and GDP. Since GDP is related to national economies and obesity has individual, socioeconomic, and environmental causes. We want to discover **how population obesity prevalence is associated with economic affluence**, whether obesity can become a potential negative outcome with economics growth, and whether or not the development of a country will lead to the growth of overweighted people. We will take a closer look to the relationship between GDP and obesity in U.S. especially. Because USA is one of the most wealthy countries in the world, at the same time, it is the 12th highest obesity rate country around the world ([in the list of countries by obesity rate](https://en.wikipedia.org/wiki/List_of_countries_by_obesity_rate)).
+Beside discussing with the relationship between GDP and obesity rate, we also show how obesity rate changed over years and why it would become a serious health problem to human being, in order to let people be aware with their own health problem. Through study the GDP and obesity, we will try to find the pattern or relationship between these two, in order to let people realize that obesity is one of the serious worldwide disease and pay more attention to their health.
+<br>
+  
+## Section 2. Data Description
+  
+1. Obesity_countries
+- This is the link to the dataset: https://www.kaggle.com/amanarora/obesity-among-adults-by-country-19752016?select=obesity-cleaned.csv
+- We will use this dataset to discover the change of the obesity rate over the years in worldwise. Also this data is contians the information for the obesity rate for different sex. We can take a closer look to the obesity rate by the sex of different countries over years.
+- This dataset is obtained from WHO. Aman Arora collected from WHO Exploratory Data Analysis and Visualizations. Aman creates a clean version for the data. In the proposal, we are providing the whole data, but in order to make our project cleaner, we choose to use the clean version for presenting the obesity rate.
+- This dataset contains 4 columns:
+  - Country and year: the country name and different years
+  - Obesity...: Prevalence of obesity among adults, (use 30 years old as the age-standardized estimate) it will be presents as percentage
+  - Sex: the sex of people. There are 3 unique value: all sexs, female, male
+- This the sample data set:
+
+```{r, echo = FALSE}
+# Show the top 5 table (specifying the column names to display)
+kable(sample_obesity, col.names = c("Country", "Year", "Obesity", "Sex"))
+```
+
+
+2. Obesity_GDP_USA
+- This is the link to the dataset: https://www.kaggle.com/annedunn/obesity-and-gdp-rates-from-50-states-in-20142017
+- We will use this dataset to analysis the relationship between obesity and GDP in USA. Through analysising the dataset, we want to discover how population obesity prevalence is associated with economic affluence in the United States. We will show a correlation between obesity and GDP in USA. In order to let more people to pay attention to their own health
+- his dataset is obtained from Kaggle. Anne Dunn collected data from DataUSA, regarding adult obesity rates, average age, average income, and poverty rates for each state, and the Federal Reserve as well as the U.S. Bureau of Economic Analysis, regarding Real GDP by state and state region.
+- This dataset contains 18 columns:
+  - State
+  - Year
+  - Adult.Obesity and Adult.Obesity.100: The obesity rate in decimal and the obesity rate in percentage
+  - Average.Age
+  - Average.Income: average income for the people in that range
+  - Population: The State's population in the given year
+  - Poverty.Rate and Poverty.Rate*100: The rate of poverty in each state for each year(in decimal(percent) and percentage)
+  - Real.GDP: Each state's GDP for each year
+  - Real.GDP.Growth and Real.GDP.Growth.100: The growth of the GDP for each state in each year(in decimal(percent) and percentage)
+  - Real.Personal.Income: The total personal income for all the population in each state in each year
+  - Region: the region of each state
+  - Region.Encoding: The unique code for each region
+  - Unit: the information for using what kind of the unit to calculate the GDP information
+  - Real.GDP.Per.Capita: The GDP for each capital in each state for each year
+  - YearFE: additional year information(actually is exactly the same as the Year, it is just the backup for Year)
+- This the sample data set:
+
+```{r, echo = FALSE}
+# Show the top 5 table (specifying the column names to display)
+kable(sample_USA)
+```
+
+### Summary Analysis
+[Obesity_countries](https://www.kaggle.com/amanarora/obesity-among-adults-by-country-19752016?select=obesity-cleaned.csv)
+
+In this dataset, there are **`r num_countries`** countries and is from **`r year_range[1]`** to **`r year_range[2]`**.
+In the sex column, there are 3 different unique values: **`r sex_list[1]`**, **`r sex_list[2]`** and **`r sex_list[3]`**.
+In the recent year **`r year_range[2]`**, the mean obesity rate over the whole world is **`r mean_obesity`**. Also the max obesity rate in the recent year is **`r max_obesity`**, which is the obesity rate of **`r country_max_obesity`**.
+
+
+- The first graph is showing all around the world, how the obesity rate changed over the times by sex.
+- The second graph is using both sexes, to see the distribution of the obesity rate in the most recent year
+- The third graph is using male, to see the distribution of the obesity rate in the most recent year
+- The forth graph is using female sexes, to see the distribution of the obesity rate in the most recent year
+
+
+<br>
+
+```{r, echo = FALSE}
+plot(obesity_sex_plot)
+plot(all_plot, xlab = "obesity rate", main = "Histogram of obesity rate in the recent year")
+plot(male_plot, xlab = "male obesity rate", main = "Histogram of male obesity rate in the recent year")
+plot(female_plot, xlab = "female obesity rate", main = "Histogram of female obesity rate in the recent year")
+```
+
+<br>
+For the first graph, the general trend is increasing, there is no any outliers. But when graphing the graph, there is a warning message, there are 504 rows with missing values. 
+
+For the second graph, there is a gap between 40 and 45, there are couples outliers and make the graph is slightly skewed to right. 
+
+For the third one, the histogram of male obesity rate in the recent year in general the graph is skewed to right, but there is an bimodal on the left side.
+
+For the forth one, the histogram of female obesity rate in the recent year is more normal distributed to the other to but there is slightly skewed to right.
+
+
+[Obesity_GDP_USA](https://www.kaggle.com/annedunn/obesity-and-gdp-rates-from-50-states-in-20142017)
+
+The dataset is from **`r year_range_usa[1]`** to **`r year_range_usa[2]`**.
+Over these years, the min obesity is **`r range_obesity_usa[1]`**, and the max obesity rate is **`r range_obesity_usa[2]`**; the min GDP is **`r range_GDP_usa[1]`** , and the max GDP is **`r range_GDP_usa[2]`** ; the min poverty is **`r range_poverty_usa[1]`**, and the max poverty is **`r range_poverty_usa[2]`**; the min GDP growth **`r range_GDP_growth_usa[1]`**, and the max GDP growth **`r range_GDP_growth_usa[2]`**.
+In the recent year **`r year_range_usa[2]`**, the mean obesity rate in U.S. is **`r mean_recent$Adult.Obesity`**; the mean GDP is **`r mean_recent$Real.GDP`**; the mean poverty is **`r mean_recent$Poverty.Rate`**; the mean **`r mean_recent$Real.GDP.Growth`**.
+
+
+- The first graph is the histogram of USA obesity rate in the most recent year
+- The second graph is the histogram of USA GDP in the most recent year
+- The third graph is the histogram of USA poverty rate in the most recent year
+- The forth graph is the histogram of USA GDP growth in the most recent year
+
+<br>
+
+```{r, echo = FALSE}
+plot(obesity_plot, xlab = "obesity rate", main = "Histogram of U.S.A obesity rate in the recent year")
+plot(GDP_plot, xlab = "GDP", main = "Histogram of U.S.A GDP in the recent year")
+plot(poverty_plot, xlab = "poverty rate", main = "Histogram of U.S.A poverty rate in the recent year")
+plot(GDP_growth_plot, xlab = "GDP growth", main = "Histogram of U.S.A GDP growth in the recent year")
+```
+
+<br>
+The first graph is a normal distribution, but there is a really small peak at the end
+The second graph is skewed to right, there is gap between 2000000 and 2500000. There are couples of outliers on the right side
+The third graph is pretty similar ti the first one. Normally distributed and a really small peak at the end. And it seems like a little be skewed to the right
+The forth graph is definitly normal distribution.
+
+
+## Section 3. Specific Quetion Analyses
+
+### Question 1: Is there any interesting relationship between GDP and obesity rate inside US?
+
+1. We are wondering about people will get more weights or less when they become richer. We will use GDP to present whether the people in that area is wealth or not, and use obesity rate to show whether the people is overweight or not.
+
+2. We create several plots based on different years since only discuss the relationship in a specific years is not enough to find out the relationships. After that, we took the average of the GDP and the average of obesity rate in each region in order to show the relationship in each region. 
+
+3. Plots of the relationship between obesity rate and GDP.
+
+```{r question analysis 1, echo = FALSE}
+plot(obesity_2017)
+plot(obesity_2016)
+plot(obesity_2015)
+plot(obesity_2014)
+```
+
+4. From those plots, we can find out that there is a **little connection** between obesity rate and GDP. However, it is not that obvious to see, but we can find out that with the regions that have higher GDP are more intended to have the higher obesity rate. At first, we assume that obesity rate and GDP might be positive correlation, but it turns out that there isn't strong connections between two of them. Furthermore, the differences of obesity rate and GDP in each region don't change a lot to really find out the differences in each year. Thus, the reason that causes this phenomenon might because how wealthy the people are won't change too much about what they will eat. 
+
+
+### Question 2: Changes in obesity rate in the whole world over time (1975 - 2016) based on sexes?
+
+1. After seeing the obesity rates in US, we want to find out how the obesity rate has changed from the past to recent years. In that case, we will able to know whether the world is getting fatter or not. Also, we also analysis the obesity rate in different sexes, such as males, females, and both. 
+
+2. We find out the mean of the obesity rate of the whole world depends on years. Then, create a linear plot to show the growth curve based on different sexes. 
+
+3. Plots of the changes of obesity rate from 1975 - 2016.
+
+```{r question analysis 2, echo = FALSE}
+plot(Obesity_countries_40yrs)
+```
+
+4. From the plot, we know that the population is getting heavier over the past 40 years, no matter male or female. More and more people are becoming overweight. The flow of this trend is getting worse and worse since it is a curve growth, which means the population of those overweight will become more and more in the same sort of time. 
+
+
+### Question 3: the comparison of the obesity rate in us by state and the global obesity rate from 2014 to 2016
+
+1. in this question, we plan to compare the obesity rate between the obesity rate counted by states in US and the global obesity rate by the sum of all the countries in the world. Since the year that contain on both graph is only 2014-2016, we specifically analyze the data in these three years and do the comparison.
+
+2. We count the mean of the US obesity rate in each states to be the US mean obesity rate, and then count the mean of the obesity rate from all over the world to be the global mean obesity rate.Then we graph the the plot to show the trend of the growth between US and the world as a whole.
+
+3. Plot of the comparison between the us obesity rate and the global obesity rate 2014-2016
+
+```{r question analysis 3, echo = FALSE}
+plot(total_vs_us_plot)
+```
+
+4. From the plot, we can see that from 2014 to 2016 the total obesity rate in us is all higher than the global obesity rate and both of them get slightly increase from 2014 to 2016. According to this graph, though it shows all of the data we need correctly, but since the changes of obesity rate very small, it is hard to see obvious difference in the graph. It might be better to compare with the increasing rate or increase the amount to data up to 5-10 years. These changes may let the graph be clear.
+
+### Question 4: the prediction of global GDP in 2014 - 2016
+
+1. Two data we use are the obesity rate and GDP of us and the global obesity rate. Using the ratio we get from the us, it would be interesting to see our approximation of the global average GDP. 
+
+2. from the question 1-3 above, we already know the mean GDP and the mean obesity rate in US in 2014 -2016 and the mean global obesity rate. According to all three variable, we are planning to use the mean ratio of GDP/obesity rate in US as the ratio times the global obesity rate to predict the mean global GDP.Then we plot these predicted GDP into the graph.
+
+3. The prediction of GDP in each year
+- 2014 predicted GDP: `r predicted_GDP_2014`
+- 2015 predicted GDP: `r predicted_GDP_2015`
+- 2016 predicted GDP: `r predicted_GDP_2016`
+
+
+```{r question analysis 4, echo = FALSE}
+plot(predict_GDP_plot)
+```
+
+4. from the plot and the exact result we receive from the calculation, we can see that the global average GDP is gradually increasing from 2014 to 2016. It would be more interesting if we can compare to the real global GDP and see the differences between them.
